@@ -1,13 +1,32 @@
 import React, {Component} from 'react';
-import $ from 'jquery'
+import PubSub from 'pubsub-js';
+ 
 
 class InputCustomizado extends Component{
+
+    constructor(){
+        super();
+        this.state = {msgErro: ""};
+    }
+
+    componentDidMount(){
+        PubSub.subscribe("erro-validacao", function(topico, erro){
+            if(erro.campo === this.props.name){
+                this.setState({msgErro: erro.erro});
+            }
+        }.bind(this));
+
+        PubSub.subscribe("limpar-erros", function(topico){
+           this.setState({msgErro: ""});
+        }.bind(this));
+    }
 
     render(){
         return (
         <div className="pure-control-group">
             <label htmlFor={this.props.id}>{this.props.label}</label> 
-            <input id={this.props.id} type={this.props.type} name={this.props.name} defaultValue={this.props.defaultValue} onChange={this.props.onChange}/>                  
+            <input id={this.props.id} type={this.props.type} name={this.props.name} value={this.props.value} onChange={this.props.onChange}/>                  
+            <span className="erro">{this.state.msgErro}</span>
         </div>
         );
     }

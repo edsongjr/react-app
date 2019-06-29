@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import $ from 'jquery';
 import InputCustomizado from './componentes/InputCustomizado';
 import PubSub from 'pubsub-js';
+import TratadorErros from './TratadorErros';
 
 
 export class FormularioCandidato extends Component {
@@ -49,12 +50,18 @@ export class FormularioCandidato extends Component {
       dataType: "json",
       type: "post",
       data: JSON.stringify(json),
+      beforeSend: function(){
+        PubSub.publish("limpar-erros", {});
+      },
       success: function(){
         //disparar um aviso geral de nova listagem disponivel
-        PubSub.publish("atualiza-lista-candidatos", json);
-      },
-      error: function(){
-        console.log("Erro")
+        PubSub.publish("atualiza-lista-candidatos", json); 
+        this.setState({nome:'', cpf: '', rendaMensal: ''});
+      }.bind(this),
+      error: function(resposta){
+        if(resposta.status === 400){ 
+          new TratadorErros().publicaErros(resposta.responseJSON);
+        }
       }
     });
   }
@@ -63,9 +70,9 @@ export class FormularioCandidato extends Component {
     return (
       <div className="pure-form pure-form-aligned">
         <form className="pure-form pure-form-aligned" onSubmit={this.enviaForm} >
-            <InputCustomizado label="Nome" id="nome" type="text" name="nome" defaultValue={this.state.nome} onChange={this.setNome}/>
-            <InputCustomizado label="CPF" id="cpf" type="text" name="cpf" defaultValue={this.state.cpf} onChange={this.setCpf}/>
-            <InputCustomizado label="Renda mensal" id="rendaMensal" type="text" name="rendaMensal" defaultValue={this.state.rendaMensal} onChange={this.setRendaMensal}/>
+            <InputCustomizado label="Nome" id="nome" type="text" name="nome" value={this.state.nome} onChange={this.setNome}/>
+            <InputCustomizado label="CPF" id="cpf" type="text" name="cpf" value={this.state.cpf} onChange={this.setCpf}/>
+            <InputCustomizado label="Renda mensal" id="rendaMensal" type="text" name="rendaMensal" value={this.state.rendaMensal} onChange={this.setRendaMensal}/>
             <div className="pure-control-group">                                  
             <label></label> 
             <button type="submit" className="pure-button pure-button-primary">Gravar</button>                                    
@@ -93,7 +100,7 @@ export class TabelaCandidatos extends Component {
         {
             this.props.candidatos.map(candidato => {
               return (
-                <tr key={candidato.id}>
+                <tr key={candidato.id + candidato.nome} chave={candidato.id }>
                   <td>{candidato.nome}</td>
                   <td>{candidato.email}</td>
                 </tr>
