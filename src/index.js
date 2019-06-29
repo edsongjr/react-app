@@ -11,8 +11,9 @@ ReactDOM.render(
     (<Router>
         <App>
             <Switch>
-                <Route path="/" exact={true} component={Home}/>  
+                <Route path="/" exact component={Home}/>  
                 <Route path="/candidato" component={CandidatoBox}/>  
+                <Route path="/teste" render={() => <div>Teste das rotas</div>}/>  
             </Switch>
         </App>
     </ Router>),

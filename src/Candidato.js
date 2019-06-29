@@ -11,22 +11,13 @@ export class FormularioCandidato extends Component {
       super();
       this.state = { nome: "", cpf: "", rendaMensal: ""};
       this.enviaForm = this.enviaForm.bind(this);
-      this.setNome = this.setNome.bind(this);
-      this.setCpf = this.setCpf.bind(this);
-      this.setRendaMensal = this.setRendaMensal.bind(this);
-  }
-    
-  setNome(event){
-    this.setState({nome: event.target.value});
-  }
-    
-  setCpf(event){
-    this.setState({cpf: event.target.value});
   }
 
-  setRendaMensal(event){
-    this.setState({rendaMensal: event.target.value});
-  } 
+  salvarAlteracao(nomeInput, event){
+    var campoSendoAlterado = {};
+    campoSendoAlterado[nomeInput] = event.target.value;
+    this.setState(campoSendoAlterado);
+  }
     
   enviaForm(event){
     let json = {
@@ -70,9 +61,9 @@ export class FormularioCandidato extends Component {
     return (
       <div className="pure-form pure-form-aligned">
         <form className="pure-form pure-form-aligned" onSubmit={this.enviaForm} >
-            <InputCustomizado label="Nome" id="nome" type="text" name="nome" value={this.state.nome} onChange={this.setNome}/>
-            <InputCustomizado label="CPF" id="cpf" type="text" name="cpf" value={this.state.cpf} onChange={this.setCpf}/>
-            <InputCustomizado label="Renda mensal" id="rendaMensal" type="text" name="rendaMensal" value={this.state.rendaMensal} onChange={this.setRendaMensal}/>
+            <InputCustomizado label="Nome" id="nome" type="text" name="nome" value={this.state.nome} onChange={this.salvarAlteracao.bind(this, 'nome')}/>
+            <InputCustomizado label="CPF" id="cpf" type="text" name="cpf" value={this.state.cpf} onChange={this.salvarAlteracao.bind(this, 'cpf')}/>
+            <InputCustomizado label="Renda mensal" id="rendaMensal" type="text" name="rendaMensal" value={this.state.rendaMensal} onChange={this.salvarAlteracao.bind(this, 'rendaMensal')}/>
             <div className="pure-control-group">                                  
             <label></label> 
             <button type="submit" className="pure-button pure-button-primary">Gravar</button>                                    
@@ -116,7 +107,7 @@ export class TabelaCandidatos extends Component {
 }
 
 
-export default class AutorBox extends Component{
+export default class CandidatoBox extends Component{
 
   constructor(){
     super();
@@ -143,7 +134,7 @@ export default class AutorBox extends Component{
     return (
       <div>
         <div className="header">
-              <h1>Cadastro de autores</h1>
+              <h1>Cadastro de candidatos</h1>
           </div>
           <div className="content" id="content">
             
