@@ -136,14 +136,20 @@ export default class AutorBox extends Component{
     PubSub.subscribe("atualiza-lista-candidatos", function(topico, jsonAdicionado){
       this.setState({candidatos: this.state.candidatos.concat(jsonAdicionado)})
     }.bind(this));
-
+    
   }
 
   render(){
     return (
       <div>
-        <FormularioCandidato />
-        <TabelaCandidatos candidatos={this.state.candidatos}/>
+        <div className="header">
+              <h1>Cadastro de autores</h1>
+          </div>
+          <div className="content" id="content">
+            
+          </div>
+          <FormularioCandidato />
+          <TabelaCandidatos candidatos={this.state.candidatos}/>
       </div>
     );
   }

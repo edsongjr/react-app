@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import './css/pure-min.css';
 import './css/side-menu.css';
-import CandidatoBox from './Candidato';
+import {Link} from 'react-router-dom';
 
 class App extends Component {
 
@@ -17,24 +17,20 @@ class App extends Component {
                 <a className="pure-menu-heading" href="#">Company</a>
 
                 <ul className="pure-menu-list">
-                    <li className="pure-menu-item"><a href="#" className="pure-menu-link">Home</a></li>
-                    <li className="pure-menu-item"><a href="#" className="pure-menu-link">Autor</a></li>
-                    <li className="pure-menu-item"><a href="#" className="pure-menu-link">Livro</a></li>
+                    <li className="pure-menu-item"><Link to="/" className="pure-menu-link">Home</Link></li>
+                    <li className="pure-menu-item"><Link to="/candidato" className="pure-menu-link">Candidato</Link></li>
+                    <li className="pure-menu-item"><Link to="#" className="pure-menu-link">Livro</Link></li>
                  </ul>
             </div>
         </div>
 
         <div id="main">
-            <div className="header">
-                <h1>Autor</h1>
-             </div>
-             <div className="content" id="content">
-                <CandidatoBox/>
-              <div>             
+          <div className="content">
+              {this.props.children}
           </div>
         </div>
-     </div>
-    </div>
+      </div>
+ 
     );
   }
 }
