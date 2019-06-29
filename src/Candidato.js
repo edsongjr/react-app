@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import $ from 'jquery';
 import InputCustomizado from './componentes/InputCustomizado';
+import PubSub from 'pubsub-js';
 
 
 export class FormularioCandidato extends Component {
@@ -49,8 +50,9 @@ export class FormularioCandidato extends Component {
       type: "post",
       data: JSON.stringify(json),
       success: function(){
-        this.props.callbackAtualizaListagem(json);
-        }.bind(this),
+        //disparar um aviso geral de nova listagem disponivel
+        PubSub.publish("atualiza-lista-candidatos", json);
+      },
       error: function(){
         console.log("Erro")
       }
@@ -112,7 +114,6 @@ export default class AutorBox extends Component{
   constructor(){
     super();
     this.state = {candidatos:[]};
-    this.atualizaListagem = this.atualizaListagem.bind(this);
   }
 
   componentDidMount(){
@@ -124,16 +125,17 @@ export default class AutorBox extends Component{
         this.setState({candidatos: resposta});
       }.bind(this)
     });
-  }
 
-  atualizaListagem(jsonAdicionado){
-    this.setState({candidatos: this.state.candidatos.concat(jsonAdicionado)});
+    PubSub.subscribe("atualiza-lista-candidatos", function(topico, jsonAdicionado){
+      this.setState({candidatos: this.state.candidatos.concat(jsonAdicionado)})
+    }.bind(this));
+
   }
 
   render(){
     return (
       <div>
-        <FormularioCandidato callbackAtualizaListagem={this.atualizaListagem}/>
+        <FormularioCandidato />
         <TabelaCandidatos candidatos={this.state.candidatos}/>
       </div>
     );
